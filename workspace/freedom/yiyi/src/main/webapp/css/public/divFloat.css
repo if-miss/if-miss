@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+body ul li a span div table tr td {
+	margin: 0px;
+	padding: 0px;
+	font-size: 14px;
+}
+/**
+*浮动div文件
+*/
+#bg {
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-image: url("../../img/login.jpg");
+	z-index: 1001;
+}
+#float {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 600px;
+	height: 300px;
+	margin-left: -300px;
+	margin-top: -150;
+	padding: 3px;
+	border: 2px solid #E8E9F7;
+	background-color: white;
+	z-index: 1002;
+	overflow: auto; -moz-opacity : 0.9; opacity : 0.8;
+	filter: alpha(opacity = 90);
+	-moz-opacity: 0.9;
+	opacity: 0.8;
+}

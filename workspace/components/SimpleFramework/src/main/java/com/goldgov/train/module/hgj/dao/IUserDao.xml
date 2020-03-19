@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldgov.train.module.hgj.dao.IUserDao">
+
+	<!-- Map -->
+	<resultMap type="com.goldgov.train.module.hgj.bean.UserBean"
+		id="userBean">
+		<id column="USER_ID" jdbcType="VARCHAR" property="userId" />
+		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+		<result column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName" />
+		<result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+		<result column="USER_MAIL" jdbcType="VARCHAR" property="userMail" />
+		<result column="LOGIN_FAIL_TIME" jdbcType="TIMESTAMP" property="loginFailTime" />
+	</resultMap>
+
+	<!--插入 -->
+	<insert id="addUser" parameterType="com.goldgov.train.module.hgj.bean.UserBean">
+		<selectKey keyProperty="userId" resultType="String" order="BEFORE">
+			select uuid()
+		</selectKey>
+		insert into hgj_user
+		(USER_ID,USER_NAME,LOGIN_NAME,PASSWORD,USER_MAIL,LOGIN_FAIL_TIME
+		)
+		values (#{userId,jdbcType=VARCHAR},
+		#{userName},#{loginName},#{password},#{userMail},#{loginFailTime}
+		)
+	</insert>
+
+	<!-- 根据登录名查询 -->
+	<select id="findUserByName" parameterType="String" resultMap="userBean">
+		select * from hgj_user
+		where login_name=#{loginName}
+	</select>
+	
+	<select id="findUserById" parameterType="String" resultMap="userBean">
+		select * from hgj_user
+		where user_id=#{userId}
+	</select>
+
+	<!-- 根据登录和密码查询名查询 -->
+	<select id="findUserByNameAndPassword" parameterType="String"
+		resultMap="userBean">
+		select *
+		from hgj_user where login_name=#{loginName} and
+		password=#{password}
+	</select>
+
+	<!-- 更新用户数据 -->
+	<update id="updateUserById" parameterType="com.goldgov.train.module.hgj.bean.UserBean">
+		update hgj_user
+		<set>
+			<if test="userName != null">user_name = #{userName},</if>
+			<if test="longinName != null">longin_name = #{longinName},</if>
+			<if test="password != null">password = #{password},</if>
+			<if test="userMail != null">user_mail = #{userMail},</if>
+			<if test="longinFailTime != null">longin_fail_time = #{longinFailTime},</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+
+	<!-- 根据用户名更新信息 -->
+	<update id="updateUserByName" parameterType="com.goldgov.train.module.hgj.bean.UserBean">
+		update hgj_user
+		<set>
+			<if test="userName != null">user_name = #{userName},</if>
+			<if test="password != null">password = #{password},</if>
+			<if test="userMail != null">user_mail = #{userMail},</if>
+			<if test="longinFailTime != null">longin_fail_time = #{longinFailTime},</if>
+		</set>
+		where longin_name = #{longinName}
+	</update>
+
+</mapper>

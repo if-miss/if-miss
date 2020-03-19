@@ -1,0 +1,44 @@
+package com.yiyi.module.mybatis.pagination;
+
+import com.yiyi.entity.common.Page;
+
+/**
+ * Oracle方言
+ * @Copyright 北京瑞友科技股份有限公司上海分公司-2014
+ * @author majun
+ * @date 2014-9-28
+ * =================Modify Record=================
+ * @Modifier			@date			@Content
+ * majun				2014-09-28		新增
+ */
+public class OracleDialect extends Dialect 
+{
+
+	/**
+	 * 构造分页SQL
+	 * @author majun 
+	 * @date 2014-9-28 
+	 * @param 	sql			原始SQL语句
+	 * @param 	page		分页对象
+	 * @return	String		构造后的分页SQL语句
+	 */
+	@Override
+	public String constructPageSql(String sql, Page<?> page) 
+	{
+		sql = sql.trim();
+		
+		//当前页数
+		int currentPage = page.getCurrentPage();
+		//每页显示记录数
+		int pageSize = page.getPageSize();
+		
+		StringBuilder pageSql = new StringBuilder(sql.length() + 100);
+		pageSql.append("SELECT * FROM ( SELECT T.*, ROWNUM rn FROM ( ");
+		pageSql.append(sql);
+		pageSql.append(" ) T WHERE ROWNUM <= " + Page.computeEndPage(currentPage, pageSize));
+		pageSql.append(" ) WHERE RN > " + Page.computeStartPage(currentPage, pageSize));
+		
+		return pageSql.toString();
+	}
+
+}

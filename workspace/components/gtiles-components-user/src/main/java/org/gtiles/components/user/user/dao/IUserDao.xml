@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gtiles.components.user.user.dao.IUserDao">
+
+	<sql id="tableName">LIFE_USER</sql>
+	<sql id="pkId">user_id</sql>
+	<resultMap type="org.gtiles.components.user.user.bean.UserBean" id="user">
+		<id column="user_id" jdbcType="VARCHAR" property="userId"/>
+		<result column="user_account" jdbcType="VARCHAR" property="userAccount"/>
+		<result column="user_password" jdbcType="VARCHAR" property="userPassword"/>
+		<result column="user_name" jdbcType="VARCHAR" property="userName"/>
+		<result column="user_sex" jdbcType="INTEGER" property="userSex"/>
+		<result column="user_phone" jdbcType="VARCHAR" property="userPhone"/>
+		<result column="user_email" jdbcType="VARCHAR" property="userEmail"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+	</resultMap>
+	<sql id="queryFields">
+		user_id,
+		user_account,
+		user_password,
+		user_name,
+		user_sex,
+		user_phone,
+		user_email,
+		update_time
+	</sql>
+	
+	<delete id="deleteUser">
+		delete from <include refid="tableName" /> where <include refid="pkId" /> in
+		<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+		   #{id}
+		</foreach>
+	</delete>
+	
+	<select id="findUserById" resultMap="user">
+		select <include refid="queryFields"></include> from <include refid="tableName" />
+		<where> 1 = 1 and <include refid="pkId" /> = '${id}' </where>
+	</select>
+
+	<select id="findUserListByPage"  resultMap="user">
+		select <include refid="queryFields"></include> from <include refid="tableName" />
+		<where> 
+			1 = 1
+		</where>
+	</select>
+	
+	<insert id="addUser">
+		<selectKey keyProperty="userId" resultType="String" order="BEFORE">
+		    select uuid()
+		</selectKey>
+		insert into <include refid="tableName" /> (<include refid="pkId" />,
+		user_account,user_password,user_name,user_sex,user_phone,user_email,update_time
+		) values (#{userId,jdbcType=VARCHAR},
+		#{userAccount},#{userPassword},#{userName},#{userSex},#{userPhone},#{userEmail},#{updateTime}
+		)
+	</insert>
+
+	<update id="updateUser">
+		update <include refid="tableName" />
+		<set>
+			<if test="userAccount != null">user_account = #{userAccount},</if>
+			<if test="userPassword != null">user_password = #{userPassword},</if>
+			<if test="userName != null">user_name = #{userName},</if>
+			<if test="userSex != null">user_sex = #{userSex},</if>
+			<if test="userPhone != null">user_phone = #{userPhone},</if>
+			<if test="userEmail != null">user_email = #{userEmail},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+			<include refid="pkId" /> = <include refid="pkId" />
+		</set>
+		where <include refid="pkId" /> = #{userId}
+	</update>
+	
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gtiles.components.user.user.dao.IUserLoginDao">
+
+	<sql id="tableName">LIFE_USER_LOGIN</sql>
+	<sql id="pkId">login_id</sql>
+	<resultMap type="org.gtiles.components.user.user.bean.UserLoginBean" id="userLogin">
+		<id column="login_id" jdbcType="VARCHAR" property="loginId"/>
+		<result column="user_id" jdbcType="VARCHAR" property="userId"/>
+		<result column="login_account" jdbcType="VARCHAR" property="loginAccount"/>
+		<result column="login_way" jdbcType="INTEGER" property="loginWay"/>
+	</resultMap>
+	<sql id="queryFields">
+		user_id,
+		login_account,
+		login_way,
+		login_id
+	</sql>
+	
+	<delete id="deleteUserLogin">
+		delete from <include refid="tableName" /> where <include refid="pkId" /> in
+		<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+		   #{id}
+		</foreach>
+	</delete>
+	
+	<select id="findUserLoginById" resultMap="userLogin">
+		select <include refid="queryFields"></include> from <include refid="tableName" />
+		<where> 1 = 1 and <include refid="pkId" /> = '${id}' </where>
+	</select>
+
+	<select id="findUserLoginListByPage"  resultMap="userLogin">
+		select <include refid="queryFields"></include> from <include refid="tableName" />
+		<where> 
+			1 = 1
+		</where>
+	</select>
+	
+	<insert id="addUserLogin">
+		<selectKey keyProperty="loginId" resultType="String" order="BEFORE">
+		    select uuid()
+		</selectKey>
+		insert into <include refid="tableName" /> (<include refid="pkId" />,
+		user_id,login_account,login_way,
+		) values (#{loginId,jdbcType=VARCHAR},
+		#{userId},#{loginAccount},#{loginWay},
+		)
+	</insert>
+
+	<update id="updateUserLogin">
+		update <include refid="tableName" />
+		<set>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="loginAccount != null">login_account = #{loginAccount},</if>
+			<if test="loginWay != null">login_way = #{loginWay},</if>
+			<include refid="pkId" /> = <include refid="pkId" />
+		</set>
+		where <include refid="pkId" /> = #{loginId}
+	</update>
+	
+</mapper>

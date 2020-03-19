@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiyi.entity.user.User">
+	<resultMap id="resultMap" type="com.yiyi.entity.user.User">
+		<result column="id" property="id" />
+		<result column="userName" property="userName" />
+		<result column="passWord" property="passWord" />
+		<result column="iphone" property="iphone" />
+		<result column="address" property="address" />
+		<result column="version" property="version" />
+		<result column="delFlag" property="delFlag" />
+		<result column="crtOperator" property="crtOperator" />
+		<result column="crtTime" property="crtTime" />
+		<result column="updOperator" property="updOperator" />
+		<result column="updTime" property="updTime" />
+	</resultMap>
+	
+	<!-- 查询用户信息 -->
+	<select id="user_getUser"  parameterType="com.yiyi.entity.user.User" resultMap="resultMap">
+		select username,password from au_users where username=#{userName} and password=#{passWord}
+	</select>
+	
+</mapper>
